@@ -25,3 +25,6 @@ CFG = "detection models/yolov4-tiny.cfg"            # Files path to the detectio
 COCO= "detection models/coco.names"                 # Files path to the COCO name data set
 
 cam = ai_cam(CAMID, CAM_WIDTH, CAM_HEIGHT, FPS, WEIGHTS, CFG, COCO)
+
+while 1:
+    cam.get_frame_serial()
