@@ -26,6 +26,7 @@ class ai_cam:
 
 
 
+'''
 CAMID = 0 			                                # The Cam ID, usually 0, but if you have many cams attached it may change
 CAM_HEIGHT = 360	                                # The height of the camera frame, higher you go, slower performance (don't change unless needed)
 CAM_WIDTH = 640		                                # The width of the camera frame, higher you go, slower performance (don't change unless needed)
@@ -37,3 +38,4 @@ COCO= "detection models/coco.names"                 # Files path to the COCO nam
 cam = ai_cam(CAMID, CAM_WIDTH, CAM_HEIGHT, FPS, WEIGHTS, CFG, COCO)
 
 cam.sendframe()
+'''
