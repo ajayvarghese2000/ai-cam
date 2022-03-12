@@ -1,5 +1,5 @@
 from webcam import camera
-import serial
+import socketio
 
 class ai_cam:
     def __init__(self,CAMID, WIDTH, HEIGHT, FPS, WEIGHTS, CFG, COCO):
@@ -7,17 +7,25 @@ class ai_cam:
         # Creating the camera object with the supplied variables
         self._CAM = camera(CAMID, WIDTH, HEIGHT, FPS, WEIGHTS, CFG, COCO)
 
-        self._serialport = serial.Serial("/dev/ttyS0", 115200, timeout=1)
-        self._serialport.flush()
+        self.sock = socketio.Client(logger=False, engineio_logger=False)
+        self.sock.connect("http://192.168.0.5:12345", socketio_path="/socket.io/")
+        
         return
 
-    ## Too slow
-    def get_frame_serial(self):
+    def sendframe(self):
         frame, person = self._CAM.getFrame()
-        self._serialport.write(str.encode(frame + '\n'))
+        payload = {"frame" : frame, "person" : person}
+        try:
+            self.sock.emit("cam", payload)
+        except:
+            print("Data send error")
         return
+    
+    def __del__(self):
+        self.sock.disconnect()
 
-'''
+
+
 CAMID = 0 			                                # The Cam ID, usually 0, but if you have many cams attached it may change
 CAM_HEIGHT = 360	                                # The height of the camera frame, higher you go, slower performance (don't change unless needed)
 CAM_WIDTH = 640		                                # The width of the camera frame, higher you go, slower performance (don't change unless needed)
@@ -28,5 +36,4 @@ COCO= "detection models/coco.names"                 # Files path to the COCO nam
 
 cam = ai_cam(CAMID, CAM_WIDTH, CAM_HEIGHT, FPS, WEIGHTS, CFG, COCO)
 
-cam.get_frame_serial()
-'''
+cam.sendframe()
