@@ -42,10 +42,10 @@ class camera:
             # Takes the frame given then runs it through the detection
             frame, person = self.detector.detect(frame)
 
-            # Encodes the frame into a png format
-            retval, frame = cv2.imencode('.png', frame)
+            # Encodes the frame into a jpeg format
+            retval, frame = cv2.imencode('.jpeg', frame)
 
-            # Converts the PNG to a base64 string
+            # Converts the jpeg to a base64 string
             frame = base64.b64encode(frame)
             frame = frame.decode("utf-8")
 
