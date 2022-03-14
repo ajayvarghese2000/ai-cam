@@ -1,0 +1,12 @@
+[Unit]
+Description=Auto Start AI-Cam Server
+After=network.target
+
+[Service]
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/AI_Cam/ai-cam/
+ExecStart=python3 server.py
+
+[Install]
+WantedBy=multi-user.target
