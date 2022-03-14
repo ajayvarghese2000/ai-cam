@@ -6,7 +6,7 @@ After=network.target
 User=pi
 Group=pi
 WorkingDirectory=/home/pi/AI_Cam/ai-cam/
-ExecStart=python3 server.py
+ExecStart=python3 main.py
 
 [Install]
 WantedBy=multi-user.target
