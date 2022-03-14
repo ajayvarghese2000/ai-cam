@@ -23,8 +23,9 @@ class ai_cam:
         # Creaking the websocket client
         self._SOCK = socketio.Client(logger=False, engineio_logger=False)
 
-        # Starts the Connection to teh other PI
-        self.connect(PI_URL)
+        # Starts the Connection to the other PI
+        self._PI_URL = PI_URL
+        self.connect(self._PI_URL)
         
         # Once a connection has been made start sending video feed
         while(self._SOCK.connected == True):
@@ -32,7 +33,7 @@ class ai_cam:
         
         # If connection dropped after sending frame attempt to reconnect
         if(self._SOCK.connected != True):
-            self.connect()
+            self.connect(self._PI_URL)
         
         return
 
@@ -67,7 +68,7 @@ class ai_cam:
         # Check if it got disconnected midsend and attempt a reconnection
         except:
             if(self._SOCK.connected != True):
-                self.connect()
+                self.connect(self._PI_URL)
         
         return
     
