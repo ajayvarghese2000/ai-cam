@@ -1,7 +1,7 @@
 from ai_cam import ai_cam
 from threading import Thread	
 
-CAMID = 2 			                                # The Cam ID, usually 0, but if you have many cams attached it may change
+CAMID = 0 			                                # The Cam ID, usually 0, but if you have many cams attached it may change
 CAM_HEIGHT = 360	                                # The height of the camera frame, higher you go, slower performance (don't change unless needed)
 CAM_WIDTH = 640		                                # The width of the camera frame, higher you go, slower performance (don't change unless needed)
 CAM_FPS = 15
