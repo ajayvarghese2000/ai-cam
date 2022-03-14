@@ -37,6 +37,7 @@ class camera:
 
             # Raises an error if the program can not get a frame
             raise IOError("Can not get Frame") 
+
         else:
 
             # Takes the frame given then runs it through the detection
@@ -49,14 +50,13 @@ class camera:
             frame = base64.b64encode(frame)
             frame = frame.decode("utf-8")
 
-
-            # Returns the converted frame
+            # Returns the converted frame and a boolean fro if the frame contains people
             return frame, person
     
     # The constructor function, sets up the camera to get frames from
     #   Takes in, the ID, width and fps of the camera
     #   returns nothing - will raise an error if the camera failed to open
-    def __init__(self,camID, width, height, fps, WEIGHTS, CFG, COCO):
+    def __init__(self,camID, WIDTH, HEIGHT, FPS, WEIGHTS, CFG, COCO):
 
         # Uses cv2 to capture the camera using DirectShow
         self.cam = cv2.VideoCapture(camID)
@@ -66,12 +66,12 @@ class camera:
             raise IOError("Can not open webcam") 
 
         # sets the camera parameters for both the class and the cv2 object
-        self.width = width
-        self.height = width
-        self.fps = fps
-        self.cam.set(cv2.CAP_PROP_FRAME_WIDTH, width)
-        self.cam.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
-        self.cam.set(cv2.CAP_PROP_FPS, fps)
+        self.width = WIDTH
+        self.height = HEIGHT
+        self.fps = FPS
+        self.cam.set(cv2.CAP_PROP_FRAME_WIDTH, WIDTH)
+        self.cam.set(cv2.CAP_PROP_FRAME_HEIGHT, HEIGHT)
+        self.cam.set(cv2.CAP_PROP_FPS, FPS)
 
         # Creating the detection object so frames can be passed through
         self.detector = detector(WEIGHTS, CFG, COCO)

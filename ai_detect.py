@@ -6,28 +6,27 @@
 
 ## [Imports]
 import cv2          # Used to detect objects
-import numpy as np
-#from sqlalchemy import false, true  # Used to get object cordinates
+import numpy as np  # Used for fast math operations over arrays 
 
 # Main Class
 #   Functions:
 #       Constructor - Loads the detection weights and creates the dnn object
-#       detect      - Takes the input frame and 
+#       detect      - Takes the input frame and runs it through the DNN
 class detector:
 
     # The constructor function, sets up the cv2 neural network
     #       Takes in file paths to the weights, configuration files and the coco dataset
     #       returns nothing
-    def __init__(self, weights, cfg, coco):
+    def __init__(self, WEIGHTS, CFG, COCO):
         # Load the weights using cv2's deep neural network
-        self.net = cv2.dnn.readNet(weights, cfg)
+        self.net = cv2.dnn.readNet(WEIGHTS, CFG)
 
         # Reading the Coco training set names
         self.classes = []
-        with open(coco, "r") as f:
+        with open(COCO, "r") as f:
             self.classes = [line.strip() for line in f.readlines()]
         
-        # Getting the names ant processing layers from the YOLO weights model
+        # Getting the names and processing layers from the YOLO weights model
         self.layer_names = self.net.getLayerNames()
         try:
 
@@ -96,6 +95,7 @@ class detector:
         # Setting the font for the names
         font = cv2.FONT_HERSHEY_PLAIN
 
+        # Default case is that there is no person in the frame to begin with
         person = False
 
         # Adding the boxes to the cv2 frame
@@ -108,10 +108,13 @@ class detector:
                 # Setting the label and setting the colour
                 label = str(self.classes[class_ids[i]])
                 
-                # Checking if a person was found
+                # Checking if a person box was added
                 if(label.lower() == 'person'):
+
+                    # Updating the value if a person was found
                     person = True
                 
+                # Setting the colour for the box
                 color = self.colors[i]
 
                 # Drawing the rectangle onto the frame
@@ -120,5 +123,5 @@ class detector:
                 # Drawing the label onto the frame
                 cv2.putText(img, label, (x, y - 10), font, 3, color, 2)
         
-        # Returning the new frame back to the drone
+        # Returning the new frame and person value back to the cam
         return img, person

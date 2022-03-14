@@ -1,41 +1,77 @@
-from webcam import camera
-import socketio
+# A wrapper class that handles the comunication to other PI's and the
+# control of the attached camera 
+#
+#   Written by Team CCC
+#
 
+## [Imports]
+from time import sleep      # Used to make sure the connection is connected
+from webcam import camera   # The code to control the camera that is attached
+import socketio             # Used to handel TCP data transfer from Pi to Pi
+
+# Main Class
+#   Functions:
+#       Constructor - Sets up the camera object with the values passed in
+#       Destructor  - Disconects from the Pi server and closes the camera
+#       sendframe   - Sends a frame from the camera to the Pi
 class ai_cam:
-    def __init__(self,CAMID, WIDTH, HEIGHT, FPS, WEIGHTS, CFG, COCO):
+    def __init__(self, CAMID, WIDTH, HEIGHT, FPS, WEIGHTS, CFG, COCO, PI_URL):
 
         # Creating the camera object with the supplied variables
         self._CAM = camera(CAMID, WIDTH, HEIGHT, FPS, WEIGHTS, CFG, COCO)
 
-        self.sock = socketio.Client(logger=False, engineio_logger=False)
-        self.sock.connect("http://192.168.0.5:12345", socketio_path="/socket.io/")
+        # Creaking the websocket client
+        self._SOCK = socketio.Client(logger=False, engineio_logger=False)
+
+        # Starts the Connection to teh other PI
+        self.connect(PI_URL)
+        
+        # Once a connection has been made start sending video feed
+        while(self._SOCK.connected == True):
+            self.sendframe()
+        
+        # If connection dropped after sending frame attempt to reconnect
+        if(self._SOCK.connected != True):
+            self.connect()
         
         return
 
+    # Connects to the Main Pi server from the supplied URL
+    def connect(self, PI_URL):
+        
+        # Attempts to connect to server forever until a connection has been made
+        while(self._SOCK.connected != True):
+
+            # Tries to connect to the server
+            try:
+                self._SOCK.connect(PI_URL, socketio_path="/socket.io/")
+
+            # Sleeps for 5 secons if a connection failed
+            except:
+                sleep(5)
+
+    # Gets a frame from the AI camera and packages it in the correct format to 
+    # send to the main PI.
     def sendframe(self):
+        
+        # Gets the latest frame from the AI cam
         frame, person = self._CAM.getFrame()
+        
+        # Packing the data
         payload = {"frame" : frame, "person" : person}
+        
+        # Attempting to send to the server under the 'cam' message tag
         try:
-            self.sock.emit("cam", payload)
+            self._SOCK.emit("cam", payload)
+
+        # Check if it got disconnected midsend and attempt a reconnection
         except:
-            print("Data send error")
+            if(self._SOCK.connected != True):
+                self.connect()
+        
         return
     
+    # Destructor function to clean up applications on close
     def __del__(self):
-        self.sock.disconnect()
-
-
-
-'''
-CAMID = 0 			                                # The Cam ID, usually 0, but if you have many cams attached it may change
-CAM_HEIGHT = 360	                                # The height of the camera frame, higher you go, slower performance (don't change unless needed)
-CAM_WIDTH = 640		                                # The width of the camera frame, higher you go, slower performance (don't change unless needed)
-FPS = 15                                            # The FPS to try and capture at
-WEIGHTS = "detection models/yolov4-tiny.weights"    # Files path to the detection model weights
-CFG = "detection models/yolov4-tiny.cfg"            # Files path to the detection model configuration
-COCO= "detection models/coco.names"                 # Files path to the COCO name data set
-
-cam = ai_cam(CAMID, CAM_WIDTH, CAM_HEIGHT, FPS, WEIGHTS, CFG, COCO)
-
-cam.sendframe()
-'''
+        self._SOCK.disconnect()
+        self._CAM.__del__()
