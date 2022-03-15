@@ -41,6 +41,7 @@ PI_URL = "http://192.168.0.5:12345"                 # The server URL the Pi is r
 
 - [Subsystem Overview](#Subsystem-Overview)
 - [Code Overview](#Code-Overview)
+	- [Event Loop](#Event-Loop)
 - [Test Plan](#Test-Plan)
 - [Installation](#Installation)
 - [Deployment](#Deployment)
@@ -72,6 +73,12 @@ The code is split into 4 major classes with each instantiated inside each other 
 `webcam.py` - Contains the Webcam class that has all the logic for connecting to the attached webcam and getting the feed from the camera. It also contains the AI detector object.
 
 `ai_detect.py` - Contains the detector class that allows you to run a frame through OpenCV's Deep Neural Net using a pretrained model.
+
+### Event Loop
+
+<p align="center">
+	<img src="https://i.imgur.com/bxdvXTE.jpg" alt="drawing"/>
+</p>
 
 ------------
 
