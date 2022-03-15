@@ -48,7 +48,7 @@ PI_URL = "http://192.168.0.5:12345"                 # The server URL the Pi is r
 
 ## Subsystem Overview
 
-This subsystem is composed of a USB camera and a Raspberry Pi 4, originally it was meant to use a Nvidia Jetson Nano which allows for CUDA however due to the global chip shortage it was unable to be procured. The AI detection code however is flexible and will work on both CPU processing and CUDA processing is available.
+This subsystem is composed of a USB camera and a Raspberry Pi 4, originally it was meant to use a Nvidia Jetson Nano which allows for CUDA however due to the global chip shortage it was unable to be procured. The AI detection code however is flexible and will work on both CPU processing and CUDA processing if available.
 
 **Subsystem Diagram :**
 
