@@ -41,6 +41,7 @@ PI_URL = "http://192.168.0.5:12345"                 # The server URL the Pi is r
 
 - [Subsystem Overview](#Subsystem-Overview)
 - [Code Overview](#Code-Overview)
+- [Test Plan](#Test-Plan)
 - [Installation](#Installation)
 - [Deployment](#Deployment)
 
@@ -71,6 +72,22 @@ The code is split into 4 major classes with each instantiated inside each other 
 `webcam.py` - Contains the Webcam class that has all the logic for connecting to the attached webcam and getting the feed from the camera. It also contains the AI detector object.
 
 `ai_detect.py` - Contains the detector class that allows you to run a frame through OpenCV's Deep Neural Net using a pretrained model.
+
+------------
+
+## Test Plan
+
+<div align="center">
+
+|Objective|Testing Strategy|Expected Output|Current Output|Pass/Fail|
+|--|--|--|--|:--:|
+|Correctly connect to the Main Pi Sockets Server|Run the connection method from the code, see if that Cam connects to the server by looking at the client list|The AI-Camera Successfully connects to the Main Pi sockets server.|The AI-Cam successfully connects to the Main Pi's server and correctly appears on the client list and is ready to send data.|✔️|
+|Auto-reconnect on disconnect| Once connected remove the ethernet cable, wait for 30 seconds then reconnect and monitor the server client list | The Cam will detect the disconnection and attempt to reconnect every 5 seconds until a new successful connection can be made| The Cam does detect the disconnection and re-runs the connect method until a new connection can be made every 5 seconds|✔️|
+|Be able to send messages to the sockets server|Connect to the server and send a test message using the send message method and see if the output is received server-side| The message is sent and then displayed on the server console | The message is sent correctly and seen in the server console|✔️|
+|Open the attached camera and see its feed|Use the open camera method to get a frame from the camera and send it to the server and see if it is displayed| The camera is successfully opened and a frame captured that is sent using the sockets send method and correctly displayed server side| The camera opens correctly and captures the current frame and is displayed as expected server side.| ✔️ |
+|Object Detection is working as expected|Run the camera and send the frame to the ai detector method to detect objects first then send the new detected frame to the server.| The image from the camera is processed correctly and the objects are detected and sent back to the server.|The objects in the frame are being correctly detected and being displayed server side as expected.|✔️|
+
+</div>
 
 ------------
 
